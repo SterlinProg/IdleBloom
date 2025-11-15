@@ -146,7 +146,7 @@ sysinfo.txt
 # Crashlytics generated file
 
 # Packed Addressables
-/Assets/AddressableAssetsData/*/*.bin*
+/Assets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Temporary auto-generated Android Assets
 /Assets/StreamingAssets/aa.meta
