@@ -109,6 +109,24 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PointerDown"",
+                    ""type"": ""Value"",
+                    ""id"": ""c6816821-8f8f-48b8-be3c-1f1731242312"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""602ef51a-0aed-4881-9a0f-0fdd8e74d537"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -133,6 +151,28 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Start"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1596ee6b-bc25-4162-8afc-792dca4e3b03"",
+                    ""path"": ""<Pointer>/press"",
+                    ""interactions"": ""Hold(pressPoint=0.2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbecd88b-554c-41c5-bba8-b2e313a0692a"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +183,8 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
         m_Keyboard = asset.FindActionMap("Keyboard", throwIfNotFound: true);
         m_Keyboard_Interact = m_Keyboard.FindAction("Interact", throwIfNotFound: true);
         m_Keyboard_Start = m_Keyboard.FindAction("Start", throwIfNotFound: true);
+        m_Keyboard_PointerDown = m_Keyboard.FindAction("PointerDown", throwIfNotFound: true);
+        m_Keyboard_MouseMove = m_Keyboard.FindAction("MouseMove", throwIfNotFound: true);
     }
 
     ~@PCInputActions()
@@ -225,6 +267,8 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
     private List<IKeyboardActions> m_KeyboardActionsCallbackInterfaces = new List<IKeyboardActions>();
     private readonly InputAction m_Keyboard_Interact;
     private readonly InputAction m_Keyboard_Start;
+    private readonly InputAction m_Keyboard_PointerDown;
+    private readonly InputAction m_Keyboard_MouseMove;
     /// <summary>
     /// Provides access to input actions defined in input action map "Keyboard".
     /// </summary>
@@ -244,6 +288,14 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Keyboard/Start".
         /// </summary>
         public InputAction @Start => m_Wrapper.m_Keyboard_Start;
+        /// <summary>
+        /// Provides access to the underlying input action "Keyboard/PointerDown".
+        /// </summary>
+        public InputAction @PointerDown => m_Wrapper.m_Keyboard_PointerDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Keyboard/MouseMove".
+        /// </summary>
+        public InputAction @MouseMove => m_Wrapper.m_Keyboard_MouseMove;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -276,6 +328,12 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
             @Start.started += instance.OnStart;
             @Start.performed += instance.OnStart;
             @Start.canceled += instance.OnStart;
+            @PointerDown.started += instance.OnPointerDown;
+            @PointerDown.performed += instance.OnPointerDown;
+            @PointerDown.canceled += instance.OnPointerDown;
+            @MouseMove.started += instance.OnMouseMove;
+            @MouseMove.performed += instance.OnMouseMove;
+            @MouseMove.canceled += instance.OnMouseMove;
         }
 
         /// <summary>
@@ -293,6 +351,12 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
             @Start.started -= instance.OnStart;
             @Start.performed -= instance.OnStart;
             @Start.canceled -= instance.OnStart;
+            @PointerDown.started -= instance.OnPointerDown;
+            @PointerDown.performed -= instance.OnPointerDown;
+            @PointerDown.canceled -= instance.OnPointerDown;
+            @MouseMove.started -= instance.OnMouseMove;
+            @MouseMove.performed -= instance.OnMouseMove;
+            @MouseMove.canceled -= instance.OnMouseMove;
         }
 
         /// <summary>
@@ -347,5 +411,19 @@ public partial class @PCInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnStart(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PointerDown" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPointerDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MouseMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMouseMove(InputAction.CallbackContext context);
     }
 }

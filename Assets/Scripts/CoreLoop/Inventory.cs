@@ -19,11 +19,12 @@ namespace CoreLoop
     
         private int currencyAmount = 0;
         private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
+        private Dictionary<PlotDrawerElement, bool> unlockablePlots = new Dictionary<PlotDrawerElement, bool>();
+        public int purchasedPlotAmount = 0;
         public static int CurrentCurrency => Instance.currencyAmount;
 
         public static void StartProcessingCurrency()
         {
-            Instance.currencyYields.Add(ProtoGameManager.Instance.Plot);
             Instance.StartCoroutine(Instance.ProcessCurrencyYields());
         }
 
@@ -38,7 +39,7 @@ namespace CoreLoop
                     ApplyYield(ref currencyAmount,yieldOperator,resultValue);
                 }
                 CurrencyUpdated?.Invoke(this,currencyAmount);
-                yield return new WaitForSeconds(ProtoGameManager.Instance.DelayCurrencyGain);
+                yield return new WaitForSeconds(ProtoGameManager.Instance.CurrencyGainDelay);
             }
         }
 
@@ -58,9 +59,46 @@ namespace CoreLoop
             }
         }
 
-        public static void BuyItem(Plant plant)
+        public static bool TryBuyPlant(Plant plant)
         {
-            Instance.currencyAmount -= plant.currencyCost;
+            if (CurrentCurrency >= plant.currencyCost)
+            {
+                Instance.currencyAmount -= plant.currencyCost;
+                return true;
+            }
+
+            return false;
+
+        }
+
+        public static bool TryBuyPlot(PlotDrawerElement plot)
+        {
+            int totalPrice = ProtoGameManager.CalculateNextPlotPrice();
+            if (CurrentCurrency >= totalPrice)
+            {
+                Instance.currencyAmount -= totalPrice;
+                Instance.unlockablePlots[plot] = true;
+                ProtoGameManager.SpawnPlot(plot);
+                Instance.purchasedPlotAmount++;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static void AddPlot(PlotDrawerElement plotShop)
+        {
+            Instance.unlockablePlots.Add(plotShop,false);
+        }
+
+        public static void RegisterCurrencyYield(ICurrencyYield currencyYield)
+        {
+            Instance.currencyYields.Add(ProtoGameManager.Instance.PlotPrefab);
+        }
+        
+        public static void UnregisterCurrencyYield(ICurrencyYield currencyYield)
+        {
+            Instance.currencyYields.Remove(ProtoGameManager.Instance.PlotPrefab);
         }
     }
 }

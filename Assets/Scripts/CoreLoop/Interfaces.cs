@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace CoreLoop
 {
     public interface ICurrencyYield
@@ -11,5 +13,12 @@ namespace CoreLoop
         }
 
         YieldOperator ProcessCurrencyYield(int baseValue, out int result);
+    }
+
+    public interface IPointerProcessor
+    {
+        void ProcessTap(Vector2 touchPosition);
+        void ProcessRelease(Vector2 touchPosition);
+        void ProcessDrag(Vector2 touchPosition);
     }
 }

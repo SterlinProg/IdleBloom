@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace CoreLoop
 {
-    public class Plant: MonoBehaviour
+    public class Plant: MonoBehaviour,IPointerProcessor
     {
         [Serializable]
         public struct PlantState
@@ -21,15 +21,18 @@ namespace CoreLoop
         public int currencyCost = 10;
         public PlantState[] states;
         public TMP_Text Text;
+        public Collider collider;
         public PlantState CurrentState { get; private set; }
 
         private void Start()
         {
             Text.text = name;
+            PlayerInputManager.mouseMoved += ProcessDragEvent;
         }
 
         public void StartGrowing()
         {
+            collider.enabled = false;
             StartCoroutine(DoGrowProcess());
         }
 
@@ -49,5 +52,30 @@ namespace CoreLoop
             transform1.localScale = new Vector3(plantState.protoScale/2,plantState.protoScale, transform1.localScale.z);
             plantState.onStateGrow?.Invoke();
         }
+
+        #region GameplayManipulation
+
+
+        public void ProcessTap(Vector2 touchPosition)
+        {
+            PlayerInputManager.mouseMoved += ProcessDragEvent;
+        }
+
+        private void ProcessDragEvent(object sender, Vector2 e)
+        {
+            ProcessDrag(e);
+        }
+
+        public void ProcessRelease(Vector2 touchPosition)
+        {
+            PlayerInputManager.mouseMoved -= ProcessDragEvent;
+        }
+
+        public void ProcessDrag(Vector2 touchPosition)
+        {
+            gameObject.transform.position = touchPosition;
+        }
+        #endregion
+
     }
 }
