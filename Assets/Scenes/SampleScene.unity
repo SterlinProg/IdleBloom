@@ -1440,6 +1440,7 @@ MonoBehaviour:
   plotAmount: 6
   basePlotPrice: 5
   plotPriceScaling: 2
+  maxPlotUses: 1
 --- !u!4 &1868484353
 Transform:
   m_ObjectHideFlags: 0

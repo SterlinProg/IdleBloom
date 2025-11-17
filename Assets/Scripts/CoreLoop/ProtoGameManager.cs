@@ -1,5 +1,6 @@
 using System;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -19,7 +20,6 @@ namespace CoreLoop
         public int basePlotPrice = 5;
         public int plotPriceScaling = 2;
         public int maxPlotUses = 3;
-        
         
         
         public static ProtoGameManager Instance { get; private set; }
@@ -66,18 +66,24 @@ namespace CoreLoop
             Instance.HeldPlant = null;
         }
 
-        public static void SpawnPlot(PlotDrawerElement plot)
+        public static PlantPlot SpawnPlot(PlotDrawerElement plot)
         {
             PlantPlot newPlot = Instantiate(Instance.PlotPrefab, plot.elementRoot.transform.parent);
+            newPlot.Init();
             plot.elementRoot.SetActive(false);
             Inventory.RegisterCurrencyYield(newPlot);
-
+            return newPlot;
         }
 
         public static int CalculateNextPlotPrice()
         {
             int basePrice = Instance.basePlotPrice;
             return basePrice + Inventory.Instance.purchasedPlotAmount * Instance.plotPriceScaling;   
+        }
+
+        public static void ReturnPlot(PlantPlot plantPlot)
+        {
+            Inventory.LockPlot(plantPlot);
         }
     }
 }

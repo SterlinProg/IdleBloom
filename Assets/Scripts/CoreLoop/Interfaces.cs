@@ -21,4 +21,9 @@ namespace CoreLoop
         void ProcessRelease(Vector2 touchPosition);
         void ProcessDrag(Vector2 touchPosition);
     }
+
+    public interface IInventoryItem
+    {
+        string GetInventoryKey(); 
+    }
 }

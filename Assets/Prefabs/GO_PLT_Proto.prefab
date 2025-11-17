@@ -262,6 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoreLoop.Plant
   name: Proto
+  inventoryKey: Proto
   currencyCost: 10
   states:
   - protoScale: 1.5
@@ -270,18 +271,21 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     baseYield: 1
+    collectYield: 0
   - protoScale: 2
     timeToGrow: 5
     onStateGrow:
       m_PersistentCalls:
         m_Calls: []
     baseYield: 1
+    collectYield: 0
   - protoScale: 3
     timeToGrow: 8
     onStateGrow:
       m_PersistentCalls:
         m_Calls: []
-    baseYield: 3
+    baseYield: 1
+    collectYield: 10
   Text: {fileID: 449471324482785593}
   collider: {fileID: 6386869086989794262}
 --- !u!65 &6386869086989794262

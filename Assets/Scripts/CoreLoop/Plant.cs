@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace CoreLoop
 {
-    public class Plant: MonoBehaviour,IPointerProcessor
+    public class Plant: MonoBehaviour,IPointerProcessor,IInventoryItem
     {
         [Serializable]
         public struct PlantState
@@ -14,15 +14,20 @@ namespace CoreLoop
             public float protoScale;
             public float timeToGrow;
             public UnityEvent onStateGrow;
-            public int baseYield ;
+            public int baseYield;
+            public int collectYield ;
         }
 
         public string name;
+        public string inventoryKey;
         public int currencyCost = 10;
         public PlantState[] states;
         public TMP_Text Text;
         public Collider collider;
-        public PlantState CurrentState { get; private set; }
+        public int CurrentStateIndex { get; private set; }
+        public PlantState CurrentState => states[CurrentStateIndex];
+
+        public bool IsFinalState => CurrentStateIndex == states.Length-1;
 
         private void Start()
         {
@@ -38,10 +43,11 @@ namespace CoreLoop
 
         private IEnumerator DoGrowProcess()
         {
-            foreach (PlantState plantState in states)
+            for (var i = 0; i < states.Length; i++)
             {
+                var plantState = states[i];
                 ExecuteState(plantState);
-                CurrentState = plantState;
+                CurrentStateIndex = i;
                 yield return new WaitForSeconds(plantState.timeToGrow);
             }
         }
@@ -77,5 +83,9 @@ namespace CoreLoop
         }
         #endregion
 
+        public string GetInventoryKey()
+        {
+            return inventoryKey;
+        }
     }
 }

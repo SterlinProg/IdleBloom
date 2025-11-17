@@ -1,14 +1,29 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace CoreLoop
 {
     public class Inventory: MonoBehaviour
-    {
+    { 
+        public class InventoryData
+        {
+            public int amount;
+            public bool draggable;
+        }
         public static Inventory Instance { get; private set; }
         public static EventHandler<int> CurrencyUpdated;
+        private int currencyAmount = 0;
+        private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
+        private Dictionary<PlotDrawerElement, PlantPlot> unlockablePlots = new Dictionary<PlotDrawerElement, PlantPlot>();
+        public int purchasedPlotAmount = 0;
+        private Dictionary<string, InventoryData> stocks = new();
+
+        public static int CurrentCurrency => Instance.currencyAmount;
+
+
         protected virtual void Awake()
         {
             if (Instance != null && Instance != this)
@@ -16,13 +31,6 @@ namespace CoreLoop
             else
                 Instance = this as Inventory;
         }
-    
-        private int currencyAmount = 0;
-        private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
-        private Dictionary<PlotDrawerElement, bool> unlockablePlots = new Dictionary<PlotDrawerElement, bool>();
-        public int purchasedPlotAmount = 0;
-        public static int CurrentCurrency => Instance.currencyAmount;
-
         public static void StartProcessingCurrency()
         {
             Instance.StartCoroutine(Instance.ProcessCurrencyYields());
@@ -77,8 +85,8 @@ namespace CoreLoop
             if (CurrentCurrency >= totalPrice)
             {
                 Instance.currencyAmount -= totalPrice;
-                Instance.unlockablePlots[plot] = true;
-                ProtoGameManager.SpawnPlot(plot);
+                PlantPlot newPlot = ProtoGameManager.SpawnPlot(plot);
+                Instance.unlockablePlots[plot] = newPlot;
                 Instance.purchasedPlotAmount++;
                 return true;
             }
@@ -88,7 +96,7 @@ namespace CoreLoop
 
         public static void AddPlot(PlotDrawerElement plotShop)
         {
-            Instance.unlockablePlots.Add(plotShop,false);
+            Instance.unlockablePlots.Add(plotShop,null);
         }
 
         public static void RegisterCurrencyYield(ICurrencyYield currencyYield)
@@ -99,6 +107,37 @@ namespace CoreLoop
         public static void UnregisterCurrencyYield(ICurrencyYield currencyYield)
         {
             Instance.currencyYields.Remove(ProtoGameManager.Instance.PlotPrefab);
+        }
+
+        public static void AddToStock(IInventoryItem item, bool draggable)
+        {
+            string key = item.GetInventoryKey();
+            if (!Instance.stocks.ContainsKey(key))
+            {
+                Instance.stocks.Add(key, new InventoryData()
+                {
+                    draggable = draggable,
+                    amount = 1
+                });
+            }
+            else
+            {
+                Instance.stocks[key].amount++;
+            }
+        }
+
+        public static void AddCurrency(int amount)
+        {
+            Instance.currencyAmount += amount;
+        }
+
+        public static void LockPlot(PlantPlot plantPlot)
+        {
+            GameObject parentObject = plantPlot.transform.parent.gameObject;
+            PlotDrawerElement plotElement = parentObject.GetComponentInChildren<PlotDrawerElement>(includeInactive: true);
+            plotElement.elementRoot.SetActive(true);
+            Destroy(plantPlot.gameObject);
+            Instance.unlockablePlots[plotElement] = null;
         }
     }
 }

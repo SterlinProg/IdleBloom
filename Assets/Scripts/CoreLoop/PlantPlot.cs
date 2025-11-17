@@ -12,6 +12,7 @@ namespace CoreLoop
         private Collider collider;
 
         private Plant potentialPlant => ProtoGameManager.Instance.HeldPlant;
+        private int remainingUses;
 
         public void PlantIn(Plant plant)
         {
@@ -36,16 +37,37 @@ namespace CoreLoop
             {
                 PlantIn(potentialPlant);
                 ProtoGameManager.Instance.HeldPlant = null;
+                return;
             }
 
             if (potentialPlant == null && currentPlant != null)
             {
                 CollectPlant();
+                return;
             }
+        }
+
+        private void CollectPlant()
+        {
+            if (currentPlant.IsFinalState)
+            {
+                Inventory.AddToStock(currentPlant, true);
+            }
+            Inventory.AddCurrency(currentPlant.CurrentState.collectYield);
+            Destroy(currentPlant.gameObject);
+            currentPlant = null;
+            remainingUses--;
+            if (remainingUses == 0)
+                ProtoGameManager.ReturnPlot(this);
         }
 
         public void ProcessDrag(Vector2 touchPosition)
         {
+        }
+
+        public void Init()
+        {
+            remainingUses = ProtoGameManager.Instance.maxPlotUses;
         }
     }
 }
