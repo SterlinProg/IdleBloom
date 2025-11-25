@@ -1,4 +1,5 @@
 using System;
+using Data;
 using UnityEngine;
 
 namespace CoreLoop
@@ -6,6 +7,7 @@ namespace CoreLoop
     public class PlantPlot:MonoBehaviour,ICurrencyYield, IPointerProcessor
     {
         private Plant currentPlant;
+        private BasePlotData data;
         [SerializeField]
         private Transform anchorPoint;
         [SerializeField]
@@ -57,7 +59,7 @@ namespace CoreLoop
             Destroy(currentPlant.gameObject);
             currentPlant = null;
             remainingUses--;
-            if (remainingUses == 0)
+            if (remainingUses <= 0)
                 ProtoGameManager.ReturnPlot(this);
         }
 
@@ -65,9 +67,10 @@ namespace CoreLoop
         {
         }
 
-        public void Init()
+        public void Init(BasePlotData data)
         {
-            remainingUses = ProtoGameManager.Instance.maxPlotUses;
+            this.data = data;
+            remainingUses = data.totalUses;
         }
     }
 }

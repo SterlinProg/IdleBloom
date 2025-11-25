@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,30 +9,19 @@ namespace CoreLoop
 {
     public class Plant: MonoBehaviour,IPointerProcessor,IInventoryItem
     {
-        [Serializable]
-        public struct PlantState
-        {
-            public float protoScale;
-            public float timeToGrow;
-            public UnityEvent onStateGrow;
-            public int baseYield;
-            public int collectYield ;
-        }
-
-        public string name;
-        public string inventoryKey;
-        public int currencyCost = 10;
-        public PlantState[] states;
+        [NonSerialized]
+        public BasePlantData data;
         public TMP_Text Text;
         public Collider collider;
         public int CurrentStateIndex { get; private set; }
-        public PlantState CurrentState => states[CurrentStateIndex];
+        public BasePlantData.PlantState CurrentState => data.states[CurrentStateIndex];
 
-        public bool IsFinalState => CurrentStateIndex == states.Length-1;
+        public bool IsFinalState => CurrentStateIndex == data.states.Length-1;
 
-        private void Start()
+        public void Init(BasePlantData data)
         {
-            Text.text = name;
+            this.data = data;
+            Text.text = this.data.plantName;
             PlayerInputManager.mouseMoved += ProcessDragEvent;
         }
 
@@ -43,16 +33,16 @@ namespace CoreLoop
 
         private IEnumerator DoGrowProcess()
         {
-            for (var i = 0; i < states.Length; i++)
+            for (var i = 0; i < data.states.Length; i++)
             {
-                var plantState = states[i];
+                var plantState = data.states[i];
                 ExecuteState(plantState);
                 CurrentStateIndex = i;
                 yield return new WaitForSeconds(plantState.timeToGrow);
             }
         }
 
-        private void ExecuteState(PlantState plantState)
+        private void ExecuteState(BasePlantData.PlantState plantState)
         {
             var transform1 = transform;
             transform1.localScale = new Vector3(plantState.protoScale/2,plantState.protoScale, transform1.localScale.z);
@@ -85,7 +75,7 @@ namespace CoreLoop
 
         public string GetInventoryKey()
         {
-            return inventoryKey;
+            return data.inventoryKey;
         }
     }
 }

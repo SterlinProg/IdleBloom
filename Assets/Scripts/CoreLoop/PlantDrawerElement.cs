@@ -1,4 +1,5 @@
 using System;
+using Data;
 using TMPro;
 using UnityEngine;
 
@@ -6,14 +7,14 @@ namespace CoreLoop
 {
     public class PlantDrawerElement:MonoBehaviour, IPointerProcessor
     {
-        [SerializeField]
-        private GameObject prefabToSpawn;
+        private BasePlantData prefabToSpawn;
         [SerializeField]
         private TMP_Text text;
-
-        private void Start()
+        
+        public void Init(BasePlantData plant)
         {
-            text.text = $"{prefabToSpawn.name} for 10";
+            prefabToSpawn = plant;
+            text.text = $"{prefabToSpawn.plantName} for {prefabToSpawn.currencyCost}";
         }
 
         public void ProcessTap(Vector2 touchPosition)

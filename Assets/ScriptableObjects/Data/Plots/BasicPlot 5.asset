@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39006feae531403e8de5993e7e5df056, type: 3}
+  m_Name: BasicPlot 5
+  m_EditorClassIdentifier: Assembly-CSharp::Data.BasePlotData
+  basePrice: 5
+  priceScaling: 2
+  totalUses: 1
+  slotPrefab: {fileID: 4776257241532005408, guid: b4a13be36ca505147b7b0d3512e899c3, type: 3}

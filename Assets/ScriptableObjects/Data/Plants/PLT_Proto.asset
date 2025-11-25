@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7af21897d15849b8bc9a40a0c91d8ac9, type: 3}
+  m_Name: PLT_Proto
+  m_EditorClassIdentifier: Assembly-CSharp::Data.BasePlantData
+  plantName: Proto
+  inventoryKey: Proto
+  currencyCost: 10
+  states:
+  - protoScale: 1.5
+    timeToGrow: 4
+    onStateGrow:
+      m_PersistentCalls:
+        m_Calls: []
+    baseYield: 0
+    collectYield: 0
+  - protoScale: 2
+    timeToGrow: 7
+    onStateGrow:
+      m_PersistentCalls:
+        m_Calls: []
+    baseYield: 0
+    collectYield: 0
+  - protoScale: 4
+    timeToGrow: 10
+    onStateGrow:
+      m_PersistentCalls:
+        m_Calls: []
+    baseYield: 0
+    collectYield: 15
+  prefab: {fileID: 4177031599328300517, guid: 52d545c9ff782a343be807a25aa34f11, type: 3}

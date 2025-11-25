@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Data;
 using UnityEngine;
 
 namespace CoreLoop
@@ -18,6 +19,7 @@ namespace CoreLoop
         private int currencyAmount = 0;
         private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
         private Dictionary<PlotDrawerElement, PlantPlot> unlockablePlots = new Dictionary<PlotDrawerElement, PlantPlot>();
+        private Dictionary<PlotDrawerElement, int> boughtPlots = new Dictionary<PlotDrawerElement, int>();
         public int purchasedPlotAmount = 0;
         private Dictionary<string, InventoryData> stocks = new();
 
@@ -69,9 +71,9 @@ namespace CoreLoop
 
         public static bool TryBuyPlant(Plant plant)
         {
-            if (CurrentCurrency >= plant.currencyCost)
+            if (CurrentCurrency >= plant.data.currencyCost)
             {
-                Instance.currencyAmount -= plant.currencyCost;
+                Instance.currencyAmount -= plant.data.currencyCost;
                 return true;
             }
 
@@ -79,15 +81,15 @@ namespace CoreLoop
 
         }
 
-        public static bool TryBuyPlot(PlotDrawerElement plot)
+        public static bool TryBuyPlot(PlotDrawerElement plot, BasePlotData data)
         {
-            int totalPrice = ProtoGameManager.CalculateNextPlotPrice();
+            int totalPrice = plot.CalculateNextPlotPrice();
             if (CurrentCurrency >= totalPrice)
             {
                 Instance.currencyAmount -= totalPrice;
-                PlantPlot newPlot = ProtoGameManager.SpawnPlot(plot);
+                PlantPlot newPlot = ProtoGameManager.SpawnPlot(plot,data);
                 Instance.unlockablePlots[plot] = newPlot;
-                Instance.purchasedPlotAmount++;
+                Instance.boughtPlots[plot]++;
                 return true;
             }
 
@@ -97,6 +99,7 @@ namespace CoreLoop
         public static void AddPlot(PlotDrawerElement plotShop)
         {
             Instance.unlockablePlots.Add(plotShop,null);
+            Instance.boughtPlots.Add(plotShop,0);
         }
 
         public static void RegisterCurrencyYield(ICurrencyYield currencyYield)
@@ -138,6 +141,11 @@ namespace CoreLoop
             plotElement.elementRoot.SetActive(true);
             Destroy(plantPlot.gameObject);
             Instance.unlockablePlots[plotElement] = null;
+        }
+
+        public static int GetBoughtPlotAmount(PlotDrawerElement plot)
+        {
+            return Instance.boughtPlots[plot];
         }
     }
 }

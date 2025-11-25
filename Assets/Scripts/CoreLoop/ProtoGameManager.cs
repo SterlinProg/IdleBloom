@@ -1,4 +1,5 @@
 using System;
+using Data;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,12 +16,12 @@ namespace CoreLoop
         public float CurrencyGainDelay = .5f;
         public float BaseGrowthGain = 1;
         public float GrowthGainDelay = 1;
-        public Plant HeldPlant;
-        public int plotAmount = 6;
-        public int basePlotPrice = 5;
-        public int plotPriceScaling = 2;
-        public int maxPlotUses = 3;
+        public GameObject plantShopElement;
+        public BasePlantData[] plants;
+        public BasePlotData[] plots;
         
+        [NonSerialized]
+        public Plant HeldPlant;
         
         public static ProtoGameManager Instance { get; private set; }
         protected virtual void Awake()
@@ -36,6 +37,17 @@ namespace CoreLoop
             PlayerInputManager.interacted += Interacted;
             PlayerInputManager.started += Started;
             PlayerInputManager.pointerPressed += OnPointerPressed;
+
+            InitPlantShop();
+        }
+
+        private void InitPlantShop()
+        {
+            foreach (BasePlantData plant in plants)
+            {
+                GameObject newGO = Instantiate(plantShopElement, UIManager.Instance.drawer.transform);
+                newGO.GetComponent<PlantDrawerElement>().Init(plant);
+            }
         }
 
         private void OnPointerPressed(object sender, bool e)
@@ -53,10 +65,12 @@ namespace CoreLoop
         {
         }
 
-        public static void SpawnPlant(GameObject prefab, Vector2 touchPosition)
+        public static void SpawnPlant(BasePlantData data, Vector2 touchPosition)
         {
-            GameObject spawnedGO = Instantiate(prefab, new Vector3(touchPosition.x,touchPosition.y),quaternion.identity);
-            Instance.HeldPlant = spawnedGO.GetComponent<Plant>();
+            GameObject spawnedGO = Instantiate(data.prefab, new Vector3(touchPosition.x,touchPosition.y),quaternion.identity);
+            Plant plant = spawnedGO.GetComponent<Plant>();
+            plant.Init(data);
+            Instance.HeldPlant = plant;
         }
 
 
@@ -66,19 +80,13 @@ namespace CoreLoop
             Instance.HeldPlant = null;
         }
 
-        public static PlantPlot SpawnPlot(PlotDrawerElement plot)
+        public static PlantPlot SpawnPlot(PlotDrawerElement plot, BasePlotData plotData)
         {
-            PlantPlot newPlot = Instantiate(Instance.PlotPrefab, plot.elementRoot.transform.parent);
-            newPlot.Init();
+            PlantPlot newPlot = Instantiate(plotData.slotPrefab, plot.elementRoot.transform.parent).GetComponent<PlantPlot>();
+            newPlot.Init(plotData);
             plot.elementRoot.SetActive(false);
             Inventory.RegisterCurrencyYield(newPlot);
             return newPlot;
-        }
-
-        public static int CalculateNextPlotPrice()
-        {
-            int basePrice = Instance.basePlotPrice;
-            return basePrice + Inventory.Instance.purchasedPlotAmount * Instance.plotPriceScaling;   
         }
 
         public static void ReturnPlot(PlantPlot plantPlot)
