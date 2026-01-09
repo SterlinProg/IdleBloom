@@ -22,6 +22,9 @@ namespace CoreLoop
         
         [NonSerialized]
         public Plant HeldPlant;
+        [NonSerialized]
+        public WateringUIElement HeldWateringPail;
+        
         
         public static ProtoGameManager Instance { get; private set; }
         protected virtual void Awake()
@@ -54,6 +57,8 @@ namespace CoreLoop
         {
             if(HeldPlant != null && !e)
                 DenyPlant();
+            if (HeldWateringPail != null && !e)
+                HeldWateringPail = null;
         }
 
         private void Started(object sender, EventArgs e)

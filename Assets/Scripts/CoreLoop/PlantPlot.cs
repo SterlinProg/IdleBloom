@@ -35,16 +35,23 @@ namespace CoreLoop
 
         public void ProcessRelease(Vector2 touchPosition)
         {
-            if (currentPlant == null && potentialPlant != null && Inventory.TryBuyPlant(potentialPlant))
+            if (currentPlant == null && potentialPlant != null && Inventory.TryBuyPlant(potentialPlant)
+                && ProtoGameManager.Instance.HeldWateringPail == null)
             {
                 PlantIn(potentialPlant);
                 ProtoGameManager.Instance.HeldPlant = null;
                 return;
             }
 
-            if (potentialPlant == null && currentPlant != null)
+            if (potentialPlant == null && currentPlant != null && ProtoGameManager.Instance.HeldWateringPail == null)
             {
                 CollectPlant();
+                return;
+            }
+
+            if (currentPlant != null && ProtoGameManager.Instance.HeldWateringPail != null)
+            {
+                WaterPlant();
                 return;
             }
         }
@@ -71,6 +78,11 @@ namespace CoreLoop
         {
             this.data = data;
             remainingUses = data.totalUses;
+        }
+
+        public void WaterPlant()
+        {
+            currentPlant.OnWatered();
         }
     }
 }

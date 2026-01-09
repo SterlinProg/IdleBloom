@@ -26,4 +26,9 @@ namespace CoreLoop
     {
         string GetInventoryKey(); 
     }
+
+    public interface IHoldable
+    {
+        // bool TricklesDownAction();
+    }
 }

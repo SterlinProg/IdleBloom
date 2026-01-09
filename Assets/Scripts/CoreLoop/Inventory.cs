@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Core;
 using Data;
 using UnityEngine;
 
@@ -14,9 +15,12 @@ namespace CoreLoop
             public int amount;
             public bool draggable;
         }
+
+        public bool clearData = false; 
+            
         public static Inventory Instance { get; private set; }
         public static EventHandler<int> CurrencyUpdated;
-        private int currencyAmount = 0;
+        public int currencyAmount = 0;
         private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
         private Dictionary<PlotDrawerElement, PlantPlot> unlockablePlots = new Dictionary<PlotDrawerElement, PlantPlot>();
         private Dictionary<PlotDrawerElement, int> boughtPlots = new Dictionary<PlotDrawerElement, int>();
@@ -32,6 +36,8 @@ namespace CoreLoop
                 Destroy(gameObject);
             else
                 Instance = this as Inventory;
+            
+            LoadData();
         }
         public static void StartProcessingCurrency()
         {
@@ -50,6 +56,7 @@ namespace CoreLoop
                 }
                 CurrencyUpdated?.Invoke(this,currencyAmount);
                 yield return new WaitForSeconds(ProtoGameManager.Instance.CurrencyGainDelay);
+                SaveData();
             }
         }
 
@@ -146,6 +153,26 @@ namespace CoreLoop
         public static int GetBoughtPlotAmount(PlotDrawerElement plot)
         {
             return Instance.boughtPlots[plot];
+        }
+
+
+        public void SaveData()
+        {
+            SaveSystem.SavePlayer();
+        }
+
+        public void LoadData()
+        {
+            if (clearData)
+            {
+                SaveSystem.ClearData();
+                return;
+            }
+            PlayerData data = SaveSystem.LoadPlayer();
+            if(data == null)
+                return;
+            currencyAmount = data.CurrentCurrency;
+            StartProcessingCurrency();
         }
     }
 }

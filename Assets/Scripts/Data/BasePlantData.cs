@@ -11,11 +11,18 @@ namespace Data
         [Serializable]
         public struct PlantState
         {
-            public float protoScale;
+            public Sprite currentGrowthSprite;
             public float timeToGrow;
             public UnityEvent onStateGrow;
             public int baseYield;
-            public int collectYield ;
+            public int collectYield;
+        }
+
+        public struct WaterBehaviour
+        {
+            public float needGrowthRate;
+            public UnityEvent onNeedWatering;
+            public UnityEvent onNeedFulfilled; 
         }
         
         public string plantName;
@@ -23,5 +30,6 @@ namespace Data
         public int currencyCost = 10;
         public PlantState[] states;
         public GameObject prefab;
+        public int growthRate;
     }
 }

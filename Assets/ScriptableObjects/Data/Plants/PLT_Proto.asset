@@ -16,21 +16,21 @@ MonoBehaviour:
   inventoryKey: Proto
   currencyCost: 10
   states:
-  - protoScale: 1.5
+  - currentGrowthSprite: {fileID: -1566060578, guid: fbff0482abeb4494ebd2b8931a79b039, type: 3}
     timeToGrow: 4
     onStateGrow:
       m_PersistentCalls:
         m_Calls: []
     baseYield: 0
     collectYield: 0
-  - protoScale: 2
+  - currentGrowthSprite: {fileID: -1359729677, guid: fbff0482abeb4494ebd2b8931a79b039, type: 3}
     timeToGrow: 7
     onStateGrow:
       m_PersistentCalls:
         m_Calls: []
     baseYield: 0
     collectYield: 0
-  - protoScale: 4
+  - currentGrowthSprite: {fileID: -1820748698, guid: fbff0482abeb4494ebd2b8931a79b039, type: 3}
     timeToGrow: 10
     onStateGrow:
       m_PersistentCalls:
@@ -38,3 +38,4 @@ MonoBehaviour:
     baseYield: 0
     collectYield: 15
   prefab: {fileID: 4177031599328300517, guid: 52d545c9ff782a343be807a25aa34f11, type: 3}
+  growthRate: 0

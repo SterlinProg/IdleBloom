@@ -75,6 +75,8 @@ namespace CoreLoop
                     if (hit.collider != null && hit.collider.gameObject.TryGetComponent(out IPointerProcessor hitObj))
                     {
                         hitObj.ProcessRelease(Pointer.current.position.value);
+                        // if(hitObj is IHoldable holdable && !holdable.TricklesDownAction())
+                        //     return;
                     }
                 }
                 

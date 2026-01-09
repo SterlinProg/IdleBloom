@@ -18,11 +18,14 @@ namespace CoreLoop
 
         public bool IsFinalState => CurrentStateIndex == data.states.Length-1;
 
+        private float currentGrowthPoints;
+
         public void Init(BasePlantData data)
         {
             this.data = data;
             Text.text = this.data.plantName;
             PlayerInputManager.mouseMoved += ProcessDragEvent;
+            currentGrowthPoints = 0;
         }
 
         public void StartGrowing()
@@ -35,17 +38,23 @@ namespace CoreLoop
         {
             for (var i = 0; i < data.states.Length; i++)
             {
+                currentGrowthPoints = 0f;
                 var plantState = data.states[i];
                 ExecuteState(plantState);
                 CurrentStateIndex = i;
+                while (plantState.timeToGrow <= currentGrowthPoints)
+                {
+                    yield return null;
+                    TickGrowth();
+                }
                 yield return new WaitForSeconds(plantState.timeToGrow);
             }
         }
 
         private void ExecuteState(BasePlantData.PlantState plantState)
         {
-            var transform1 = transform;
-            transform1.localScale = new Vector3(plantState.protoScale/2,plantState.protoScale, transform1.localScale.z);
+            SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
+            renderer.sprite = plantState.currentGrowthSprite;
             plantState.onStateGrow?.Invoke();
         }
 
@@ -76,6 +85,27 @@ namespace CoreLoop
         public string GetInventoryKey()
         {
             return data.inventoryKey;
+        }
+
+        public void TickGrowth()
+        {
+            float addition = data.growthRate * Time.fixedDeltaTime;
+            IncreaseGrowth(addition);
+        }
+
+        public void IncreaseGrowth(float add)
+        {
+            currentGrowthPoints += add;
+        }
+
+        public void OnWatered()
+        {
+            Debug.Log($"{name}: :D");
+        }
+
+        public bool TricklesDownAction()
+        {
+            return true;
         }
     }
 }
