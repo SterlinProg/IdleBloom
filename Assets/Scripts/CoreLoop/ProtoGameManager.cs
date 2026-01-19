@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Data;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -10,20 +11,37 @@ namespace CoreLoop
 {
     public class ProtoGameManager:MonoBehaviour
     {
+
+        [Serializable]
+        public struct BaseInventory
+        {
+            public BasePlantData startingPlant;
+            public int startingPlantAmount;
+            public BasePlotData startingPlot;
+            public int startingPlotAmount;
+            public int startingPlotSpots;
+        }
         // public Plant Plant;
         [FormerlySerializedAs("Plot")] public PlantPlot PlotPrefab;
         public int BaseCurrencyGain = 1;
         public float CurrencyGainDelay = .5f;
         public float BaseGrowthGain = 1;
         public float GrowthGainDelay = 1;
+        public bool UseCurrency;
         public GameObject plantShopElement;
+        [SerializeReference]
         public BasePlantData[] plants;
+        [SerializeReference]
         public BasePlotData[] plots;
+
+        public BaseInventory baseInventory;
         
         [NonSerialized]
         public Plant HeldPlant;
         [NonSerialized]
         public WateringUIElement HeldWateringPail;
+
+        public EventHandler<PlantPlot> PlantCollected;
         
         
         public static ProtoGameManager Instance { get; private set; }
@@ -38,17 +56,17 @@ namespace CoreLoop
         private void Start()
         {
             PlayerInputManager.interacted += Interacted;
-            PlayerInputManager.started += Started;
             PlayerInputManager.pointerPressed += OnPointerPressed;
-
             InitPlantShop();
+            CommissionSystem.Initialize();
+
         }
 
-        private void InitPlantShop()
+        public static void InitPlantShop()
         {
-            foreach (BasePlantData plant in plants)
+            foreach (BasePlantData plant in Instance.plants)
             {
-                GameObject newGO = Instantiate(plantShopElement, UIManager.Instance.drawer.transform);
+                GameObject newGO = Instantiate(Instance.plantShopElement, UIManager.Instance.drawer.transform);
                 newGO.GetComponent<PlantDrawerElement>().Init(plant);
             }
         }
@@ -59,11 +77,6 @@ namespace CoreLoop
                 DenyPlant();
             if (HeldWateringPail != null && !e)
                 HeldWateringPail = null;
-        }
-
-        private void Started(object sender, EventArgs e)
-        {
-            Inventory.StartProcessingCurrency();
         }
 
         private void Interacted(object sender, EventArgs e)
@@ -90,13 +103,17 @@ namespace CoreLoop
             PlantPlot newPlot = Instantiate(plotData.slotPrefab, plot.elementRoot.transform.parent).GetComponent<PlantPlot>();
             newPlot.Init(plotData);
             plot.elementRoot.SetActive(false);
-            Inventory.RegisterCurrencyYield(newPlot);
             return newPlot;
         }
 
         public static void ReturnPlot(PlantPlot plantPlot)
         {
             Inventory.LockPlot(plantPlot);
+        }
+
+        public static void OnPlantCollected(PlantPlot plot)
+        {
+            Instance.PlantCollected?.Invoke(Instance,plot);
         }
     }
 }

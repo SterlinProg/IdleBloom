@@ -14,7 +14,14 @@ namespace CoreLoop
         public void Init(BasePlantData plant)
         {
             prefabToSpawn = plant;
-            text.text = $"{prefabToSpawn.plantName} for {prefabToSpawn.currencyCost}";
+            text.text = $"{prefabToSpawn.plantName} X {Inventory.GetItemAmount(prefabToSpawn.inventoryKey)}";
+        }
+
+        private void Update()
+        {
+            if(prefabToSpawn == null)
+                return;
+            text.text = $"{prefabToSpawn.plantName} X {Inventory.GetItemAmount(prefabToSpawn.inventoryKey)}";
         }
 
         public void ProcessTap(Vector2 touchPosition)

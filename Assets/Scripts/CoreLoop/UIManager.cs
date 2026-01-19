@@ -35,7 +35,7 @@ namespace CoreLoop
 
         private void InitPlotGrid()
         {
-            for (int i = 0; i < ProtoGameManager.Instance.plots.Length; i++)
+            for (int i = 0; i < ProtoGameManager.Instance.baseInventory.startingPlotSpots; i++)
             {
                 var plot = ProtoGameManager.Instance.plots[i];
                 var go = Instantiate(GameplaySlotPrefab, plotDrawer.transform);

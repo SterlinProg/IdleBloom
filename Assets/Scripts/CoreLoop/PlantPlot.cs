@@ -15,11 +15,13 @@ namespace CoreLoop
 
         private Plant potentialPlant => ProtoGameManager.Instance.HeldPlant;
         private int remainingUses;
+        private const string collectedKey = "a_";
 
         public void PlantIn(Plant plant)
         {
             currentPlant = plant;
             currentPlant.StartGrowing();
+            currentPlant.transform.parent = transform;
             currentPlant.transform.position = anchorPoint.position;
         }
 
@@ -60,9 +62,10 @@ namespace CoreLoop
         {
             if (currentPlant.IsFinalState)
             {
-                Inventory.AddToStock(currentPlant, true);
+                Inventory.AddToStock(collectedKey+currentPlant.GetInventoryKey(), true);
             }
-            Inventory.AddCurrency(currentPlant.CurrentState.collectYield);
+            // Inventory.AddCurrency(currentPlant.CurrentState.collectYield);
+            ProtoGameManager.OnPlantCollected(this);
             Destroy(currentPlant.gameObject);
             currentPlant = null;
             remainingUses--;

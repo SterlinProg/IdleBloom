@@ -52,8 +52,8 @@ namespace CoreLoop
         {
             if (context.started)
             {
-                Debug.Log(context.phase);
-                Debug.Log(Pointer.current.position.value);
+                // Debug.Log(context.phase);
+                // Debug.Log(Pointer.current.position.value);
                 
                 Ray pointerPos = Camera.main.ScreenPointToRay(Pointer.current.position.value);
                 RaycastHit[] hits = Physics.RaycastAll(pointerPos,  Mathf.Infinity);

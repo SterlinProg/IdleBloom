@@ -21,11 +21,14 @@ namespace CoreLoop
         public void Initialize(BasePlotData data)
         {
             this.data = data;
-            price.text = $"{CalculateNextPlotPrice()}";
+            price.text = $"{data.displayName} X {Inventory.GetItemAmount(data.inventoryKey)}";
         }
 
         private void Update()
         {
+            if(data == null)
+                return;
+            price.text = $"{data.displayName} X {Inventory.GetItemAmount(data.inventoryKey)}";
         }
 
         public void ProcessTap(Vector2 touchPosition)
@@ -45,14 +48,7 @@ namespace CoreLoop
 
         public void UnlockPlot()
         {
-            price.text = $"{CalculateNextPlotPrice()}";
+            // price.text = $"{CalculateNextPlotPrice()}";
         }
-
-        public int CalculateNextPlotPrice()
-        {
-            int basePrice = data.basePrice;
-            return basePrice + Inventory.GetBoughtPlotAmount(this) * data.priceScaling;   
-        }
-        
     }
 }
