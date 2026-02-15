@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using Data;
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 namespace CoreLoop
 {
@@ -18,7 +20,12 @@ namespace CoreLoop
 
         public bool IsFinalState => CurrentStateIndex == data.states.Length-1;
 
+        [SerializeField]
         private float currentGrowthPoints;
+        private bool needsWatering;
+        public UnityEvent onStateGrow;
+        public UnityEvent onNeedWatering;
+        public UnityEvent onNeedFulfilled;
 
         public void Init(BasePlantData data)
         {
@@ -42,12 +49,11 @@ namespace CoreLoop
                 var plantState = data.states[i];
                 ExecuteState(plantState);
                 CurrentStateIndex = i;
-                while (plantState.timeToGrow <= currentGrowthPoints)
+                while (currentGrowthPoints <= plantState.timeToGrow)
                 {
                     yield return null;
                     TickGrowth();
                 }
-                yield return new WaitForSeconds(plantState.timeToGrow);
             }
         }
 
@@ -55,7 +61,7 @@ namespace CoreLoop
         {
             SpriteRenderer renderer = GetComponentInChildren<SpriteRenderer>();
             renderer.sprite = plantState.currentGrowthSprite;
-            plantState.onStateGrow?.Invoke();
+            onStateGrow?.Invoke();
         }
 
         #region GameplayManipulation
@@ -90,7 +96,21 @@ namespace CoreLoop
         public void TickGrowth()
         {
             float addition = data.growthRate * Time.fixedDeltaTime;
+            if (!needsWatering)
+                RollNeedForWater();
+            else
+                addition *= CurrentState.waterBehaviour.growthReductionRate;
             IncreaseGrowth(addition);
+        }
+
+        private void RollNeedForWater()
+        {
+            float random = Random.Range(0, 100);
+            if (CurrentState.waterBehaviour.needChancePerTick > random)
+            {
+                needsWatering = true;
+                onNeedWatering?.Invoke();
+            }
         }
 
         public void IncreaseGrowth(float add)
@@ -101,6 +121,7 @@ namespace CoreLoop
         public void OnWatered()
         {
             Debug.Log($"{name}: :D");
+            onNeedFulfilled?.Invoke();
         }
 
         public bool TricklesDownAction()

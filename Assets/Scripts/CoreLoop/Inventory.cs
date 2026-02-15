@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Core;
 using Data;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace CoreLoop
@@ -16,10 +17,17 @@ namespace CoreLoop
             public bool draggable;
         }
 
+        public struct InventoryUpdatedArgs
+        {
+            public string InventoryKey;
+            public int amountUpdated;
+        }
+
         public bool clearData = false; 
             
         public static Inventory Instance { get; private set; }
         public static EventHandler<int> CurrencyUpdated;
+        public static event EventHandler<InventoryUpdatedArgs> InventoryUpdated;
         public int currencyAmount = 0;
         private List<ICurrencyYield> currencyYields = new List<ICurrencyYield>();
         private Dictionary<PlotDrawerElement, PlantPlot> unlockablePlots = new Dictionary<PlotDrawerElement, PlantPlot>();
@@ -123,6 +131,7 @@ namespace CoreLoop
             {
                 Instance.stocks[key].amount++;
             }
+            InventoryUpdated?.Invoke(Instance,new InventoryUpdatedArgs(){InventoryKey = key,amountUpdated = 1});
         }
         
         public static void AddToStock(string item, bool draggable)
@@ -139,6 +148,7 @@ namespace CoreLoop
             {
                 Instance.stocks[item].amount++;
             }
+            InventoryUpdated?.Invoke(Instance,new InventoryUpdatedArgs(){InventoryKey = item,amountUpdated = 1});
         }
 
         public static void AddCurrency(int amount)

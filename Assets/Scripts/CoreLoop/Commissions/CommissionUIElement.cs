@@ -17,5 +17,11 @@ namespace CoreLoop
             this.description.text = description;
             
         }
+
+        public void OnQuestCompleted()
+        {
+            title.text = $"<s>{title.text}<s>";
+            description.text = $"<s>{description.text}<s>";
+        }
     }
 }

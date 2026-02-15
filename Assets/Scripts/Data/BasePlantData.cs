@@ -13,16 +13,19 @@ namespace Data
         {
             public Sprite currentGrowthSprite;
             public float timeToGrow;
-            public UnityEvent onStateGrow;
             public int baseYield;
             public int collectYield;
+            public WaterBehaviour waterBehaviour;
         }
-
+        
+        [Serializable]
         public struct WaterBehaviour
         {
-            public float needGrowthRate;
-            public UnityEvent onNeedWatering;
-            public UnityEvent onNeedFulfilled; 
+            [Range(0,1)]
+            public float growthReductionRate;
+            [Range(0,100)]
+            public float needChancePerTick;
+            
         }
         
         public string plantName;

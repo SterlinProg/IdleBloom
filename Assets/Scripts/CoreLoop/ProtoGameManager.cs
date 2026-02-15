@@ -28,6 +28,7 @@ namespace CoreLoop
         public float BaseGrowthGain = 1;
         public float GrowthGainDelay = 1;
         public bool UseCurrency;
+        public float PlantTickRate = .5f;
         public GameObject plantShopElement;
         [SerializeReference]
         public BasePlantData[] plants;
@@ -42,6 +43,7 @@ namespace CoreLoop
         public WateringUIElement HeldWateringPail;
 
         public EventHandler<PlantPlot> PlantCollected;
+        public EventHandler<PlantPlot> PlantWatered;
         
         
         public static ProtoGameManager Instance { get; private set; }
@@ -114,6 +116,10 @@ namespace CoreLoop
         public static void OnPlantCollected(PlantPlot plot)
         {
             Instance.PlantCollected?.Invoke(Instance,plot);
+        } 
+        public static void OnPlantWatered(PlantPlot plot)
+        {
+            Instance.PlantWatered?.Invoke(Instance,plot);
         }
     }
 }

@@ -90,7 +90,7 @@ namespace CoreLoop
                 return;
 
             Vector3 newPos = Camera.main.ScreenToWorldPoint(context.ReadValue<Vector2>());
-            Debug.Log( newPos);
+            // Debug.Log( newPos);
             mouseMoved?.Invoke(this,newPos );
         }
     }

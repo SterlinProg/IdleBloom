@@ -86,6 +86,7 @@ namespace CoreLoop
         public void WaterPlant()
         {
             currentPlant.OnWatered();
+            ProtoGameManager.OnPlantWatered(this);
         }
     }
 }
