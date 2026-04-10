@@ -39,10 +39,11 @@ namespace CoreLoop
 
         [SerializeReference]
         private BasePlantData collectPlant;
+        private const string collectedKey = "a_";
 
         private void OnAddedItemToInventory(object sender, Inventory.InventoryUpdatedArgs inventoryUpdatedArgs)
         {
-            if (collectPlant.inventoryKey == inventoryUpdatedArgs.InventoryKey)
+            if (collectedKey+collectPlant.inventoryKey == inventoryUpdatedArgs.InventoryKey)
             {
                 CompleteQuest(2);
 

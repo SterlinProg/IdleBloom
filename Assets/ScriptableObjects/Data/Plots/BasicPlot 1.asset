@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39006feae531403e8de5993e7e5df056, type: 3}
   m_Name: BasicPlot 1
   m_EditorClassIdentifier: Assembly-CSharp::Data.BasePlotData
+  inventoryKey: ProtoPlot
+  displayName: ProtoPlot
   basePrice: 5
   priceScaling: 2
-  totalUses: 1
+  totalUses: 2
   slotPrefab: {fileID: 4776257241532005408, guid: b4a13be36ca505147b7b0d3512e899c3, type: 3}
