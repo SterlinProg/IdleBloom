@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -37,12 +38,17 @@ namespace CoreLoop
         {
             for (int i = 0; i < ProtoGameManager.Instance.baseInventory.startingPlotSpots; i++)
             {
-                var plot = ProtoGameManager.Instance.plots[i];
-                var go = Instantiate(GameplaySlotPrefab, plotDrawer.transform);
-                GameObject lockedSlot = Instantiate(plotSlotPrefab, go.transform);
-                lockedSlot.GetComponentInChildren<PlotDrawerElement>().Initialize(plot);
-                plotSlots.Add(go);
+                BasePlotData plot = ProtoGameManager.Instance.plots[i];
+                InitializePlotElement(plot);
             }
+        }
+
+        public static void InitializePlotElement(BasePlotData plot)
+        {
+            var go = Instantiate(Instance.GameplaySlotPrefab, Instance.plotDrawer.transform);
+            GameObject lockedSlot = Instantiate(Instance.plotSlotPrefab, go.transform);
+            lockedSlot.GetComponentInChildren<PlotDrawerElement>().Initialize(plot);
+            Instance.plotSlots.Add(go);
         }
 
         private void UpdateCurrency(object sender, int e)

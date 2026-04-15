@@ -11,17 +11,26 @@ namespace CoreLoop
         [SerializeField]
         private TMP_Text description;
 
+        private string titleText;
+        private string descriptionText;
         public void Initialize(string title, string description)
         {
-            this.title.text = title;
-            this.description.text = description;
-            
+            titleText = title;
+            descriptionText = description;
+
+            OnQuestReopened();
         }
 
         public void OnQuestCompleted()
         {
             title.text = $"<s>{title.text}<s>";
             description.text = $"<s>{description.text}<s>";
+        }
+
+        public void OnQuestReopened()
+        {
+             title.text = titleText;
+             description.text = descriptionText;
         }
     }
 }

@@ -44,6 +44,7 @@ namespace CoreLoop
 
         public EventHandler<PlantPlot> PlantCollected;
         public EventHandler<PlantPlot> PlantWatered;
+        public EventHandler<Plant> PlantGrown;
         
         
         public static ProtoGameManager Instance { get; private set; }
@@ -108,6 +109,11 @@ namespace CoreLoop
             return newPlot;
         }
 
+        public static void UnlockNewPlot()
+        {
+            UIManager.InitializePlotElement(Instance.plots[1]);
+        }
+
         public static void ReturnPlot(PlantPlot plantPlot)
         {
             Inventory.LockPlot(plantPlot);
@@ -121,5 +127,11 @@ namespace CoreLoop
         {
             Instance.PlantWatered?.Invoke(Instance,plot);
         }
+
+        public static void OnPlantGrowth(Plant plant)
+        {
+            Instance.PlantGrown?.Invoke(Instance,plant);
+        }
+
     }
 }

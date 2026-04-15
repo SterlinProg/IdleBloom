@@ -27,6 +27,7 @@ namespace CoreLoop
         public UnityEvent onNeedWatering;
         public UnityEvent onNeedFulfilled;
 
+
         public void Init(BasePlantData data)
         {
             this.data = data;
@@ -49,6 +50,7 @@ namespace CoreLoop
                 var plantState = data.states[i];
                 ExecuteState(plantState);
                 CurrentStateIndex = i;
+                ProtoGameManager.OnPlantGrowth(this);
                 while (currentGrowthPoints <= plantState.timeToGrow)
                 {
                     yield return null;
